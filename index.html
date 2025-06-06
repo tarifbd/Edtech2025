@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Academy - Learning Beyond Boundaries</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #00001a;
+            --text-color: #E0E0E0;
+            --card-bg-color: rgba(10, 10, 30, 0.5);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --header-bg: rgba(0, 0, 26, 0.8);
+            --prose-color: #E0E0E0;
+            --prose-strong-color: #c4b5fd;
+            --prose-h3-color: #fff;
+            --input-bg-color: #1f2937; /* Corresponds to gray-800 */
+            --input-border-color: #374151; /* Corresponds to gray-700 */
+            --placeholder-color: #6b7280; /* Corresponds to gray-500 */
+        }
+
+        .light-mode {
+            --bg-color: #f3f4f6; /* gray-100 */
+            --text-color: #111827; /* gray-900 */
+            --card-bg-color: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --prose-color: #374151; /* gray-700 */
+            --prose-strong-color: #4f46e5;
+            --prose-h3-color: #111827;
+            --input-bg-color: #fff;
+            --input-border-color: #d1d5db; /* gray-300 */
+            --placeholder-color: #9ca3af; /* gray-400 */
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .font-space { font-family: 'Space Grotesk', sans-serif; }
+        #universe-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .hero-glow { text-shadow: 0 0 8px rgba(173, 216, 230, 0.6), 0 0 12px rgba(173, 216, 230, 0.6), 0 0 20px rgba(173, 216, 230, 0.4); }
+        .light-mode .hero-glow { text-shadow: 0 0 8px rgba(0,0,0,0.2); }
+
+        .aurora-gradient { background: linear-gradient(120deg, #0d0d2b, #1a0a3b, #0d0d2b); }
+        .light-mode .aurora-gradient { background: linear-gradient(120deg, #e0e7ff, #c7d2fe, #e0e7ff); }
+        
+        .card-glow {
+            position: relative;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg-color);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        .card-glow:before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 0.75rem; padding: 1px;
+            background: linear-gradient(120deg, rgba(76, 38, 145, 0), rgba(76, 38, 145, 0.5), rgba(76, 38, 145, 0));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out; mask-composite: exclude;
+            z-index: -1; transition: all 0.3s ease;
+        }
+        .card-glow:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 0 30px rgba(128, 0, 128, 0.5);
+        }
+        .light-mode .card-glow:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+         .card-glow:hover:before {
+            background: linear-gradient(120deg, rgba(128, 0, 128, 0), rgba(128, 0, 128, 1), rgba(128, 0, 128, 0));
+        }
+        .btn-primary { background: linear-gradient(90deg, #4F46E5, #8B5CF6); transition: all 0.3s ease; box-shadow: 0 0 15px rgba(79, 70, 229, 0.5); }
+        .btn-primary:hover, .btn-secondary:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(139, 92, 246, 0.8); }
+        .btn-secondary { background: linear-gradient(90deg, #EC4899, #F59E0B); transition: all 0.3s ease; box-shadow: 0 0 15px rgba(236, 72, 153, 0.5); }
+        
+        .floating-icon { position: absolute; opacity: 0.6; }
+        .light-mode .floating-icon { opacity: 0.8; }
+
+        .scroll-progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #8B5CF6, #EC4899, #F59E0B); width: 0%; z-index: 100; box-shadow: 0 0 10px #EC4899; }
+        .liquid-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: #00001a; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        
+        #ai-modal { background: rgba(0, 0, 26, 0.5); backdrop-filter: blur(15px); }
+        .light-mode #ai-modal { background: rgba(255, 255, 255, 0.5); }
+
+        .prose-custom { color: var(--prose-color); }
+        .prose-custom h3 { color: var(--prose-h3-color); font-family: 'Space Grotesk', sans-serif; }
+        .prose-custom strong { color: var(--prose-strong-color); }
+        .prose-custom ul { list-style-position: inside; }
+        .prose-custom li::marker { color: #8b5cf6; }
+
+        #career-goal-input { background-color: var(--input-bg-color); border-color: var(--input-border-color); color: var(--text-color); }
+        #career-goal-input::placeholder { color: var(--placeholder-color); }
+        
+        .lds-dual-ring { display: inline-block; width: 80px; height: 80px; }
+        .lds-dual-ring:after { content: " "; display: block; width: 64px; height: 64px; margin: 8px; border-radius: 50%; border: 6px solid #fff; border-color: #fff transparent #fff transparent; animation: lds-dual-ring 1.2s linear infinite; }
+        .light-mode .lds-dual-ring:after { border-color: #111827 transparent #111827 transparent; }
+        @keyframes lds-dual-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Liquid Loader -->
+    <div class="liquid-loader"></div>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: none;">
+        <defs>
+            <filter id="liquid-filter">
+                <feTurbulence id="turbulence" baseFrequency="0.02 0.02" numOctaves="1" seed="0" stitchTiles="stitch" type="fractalNoise"></feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="0"></feDisplacementMap>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress-bar" class="scroll-progress-bar"></div>
+
+    <!-- Background Canvas -->
+    <canvas id="universe-bg"></canvas>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="header">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-bold font-space" data-lang="site-title">Stellar Academy</div>
+                <nav class="hidden md:flex items-center space-x-6 lg:space-x-8">
+                    <a href="#features" class="text-inherit hover:text-purple-400 transition-colors duration-300" data-lang="nav-features">Features</a>
+                    <a href="#about" class="text-inherit hover:text-purple-400 transition-colors duration-300" data-lang="nav-about">About</a>
+                    <a href="#ai-path" class="text-inherit hover:text-purple-400 transition-colors duration-300" data-lang="nav-ai-path">AI Path</a>
+                    <a href="#courses" class="text-inherit hover:text-purple-400 transition-colors duration-300" data-lang="nav-courses">Courses</a>
+                    <a href="#contact" class="text-inherit hover:text-purple-400 transition-colors duration-300" data-lang="nav-contact">Contact</a>
+                </nav>
+                <div class="flex items-center gap-2">
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-white/10 transition-colors">
+                        <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 7.072l.707-.707a1 1 0 10-1.414-1.414l-.707.707a1 1 0 101.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <button id="lang-toggle" class="p-2 rounded-full hover:bg-white/10 transition-colors font-semibold text-sm">EN</button>
+                    <button class="hidden sm:block px-6 py-2 rounded-full btn-primary text-white font-semibold opacity-0" id="header-button" data-lang="get-started">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-bg-color z-10"></div>
+            <div class="relative z-20 px-4">
+                <h1 class="text-4xl md:text-7xl font-bold font-space hero-glow mb-6 leading-tight" id="hero-title" data-lang="hero-title">
+                    Experience Learning Beyond Boundaries
+                </h1>
+                <p class="text-lg md:text-2xl text-inherit max-w-3xl mx-auto opacity-0" id="hero-subtitle" data-lang="hero-subtitle">
+                    Your Path to Mastery!
+                </p>
+                <div class="mt-10 opacity-0" id="hero-button">
+                    <button class="px-8 py-4 rounded-full btn-primary text-white font-bold text-lg" data-lang="explore-courses">
+                        Explore Courses
+                    </button>
+                </div>
+            </div>
+
+            <!-- Floating Icons -->
+            <div class="absolute inset-0 z-10" id="hero-icons">
+                <!-- SVG icons remain the same -->
+            </div>
+        </section>
+
+        <!-- Other sections here... -->
+        
+    </main>
+
+    <!-- Footer etc... -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.3/umd/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Language & Theme Data ---
+            const translations = {
+                'en': {
+                    'site-title': 'Stellar Academy',
+                    'nav-features': 'Features', 'nav-about': 'About', 'nav-ai-path': 'AI Path', 'nav-courses': 'Courses', 'nav-contact': 'Contact',
+                    'get-started': 'Get Started',
+                    'hero-title': 'Experience Learning Beyond Boundaries',
+                    'hero-subtitle': 'Your Path to Mastery!',
+                    'explore-courses': 'Explore Courses',
+                    'why-title': 'Why Stellar Academy?',
+                    'why-subtitle': 'We provide a unique ecosystem for exponential career growth.',
+                    'feature-1-title': 'Job-Oriented Courses', 'feature-1-desc': 'Industry-relevant curriculum designed to make you job-ready from day one.',
+                    'feature-2-title': 'Live Projects', 'feature-2-desc': 'Gain practical experience by working on real-world projects and case studies.',
+                    'feature-3-title': 'Quality Trainers', 'feature-3-desc': 'Learn from certified experts and industry veterans with years of experience.',
+                    'mission-title': 'Our Cosmic Mission',
+                    'mission-p1': 'We aim to democratize education, making high-quality learning accessible to everyone in Bangladesh and beyond. Our mission is to empower individuals with the skills and knowledge to thrive in the digital age and reach their full potential.',
+                    'mission-p2': 'By fusing cutting-edge technology with proven teaching methodologies, we create a learning experience that is not just effective, but truly transformative.',
+                    'ai-path-title': 'Chart Your Course with AI',
+                    'ai-path-subtitle': 'Tell us your dream job, and our AI will generate a personalized learning path for you.',
+                    'ai-path-placeholder': "e.g., 'Become a AI Engineer in Bangladesh'",
+                    'ai-path-button': '✨ Generate My Path',
+                    'ai-path-initial': 'Your personalized path will appear here...',
+                    'courses-title': 'Explore Our Live Courses',
+                },
+                'bn': {
+                    'site-title': 'স্টেলার একাডেমি',
+                    'nav-features': 'বৈশিষ্ট্য', 'nav-about': 'আমাদের সম্পর্কে', 'nav-ai-path': 'এআই পাথ', 'nav-courses': 'কোর্সসমূহ', 'nav-contact': 'যোগাযোগ',
+                    'get-started': 'শুরু করুন',
+                    'hero-title': 'সীমানার বাইরে শেখার অভিজ্ঞতা নিন',
+                    'hero-subtitle': 'আপনার দক্ষতার পথ!',
+                    'explore-courses': 'কোর্সগুলো দেখুন',
+                    'why-title': 'কেন স্টেলার একাডেমি?',
+                    'why-subtitle': 'আমরা দ্রুত ক্যারিয়ার বৃদ্ধির জন্য একটি অনন্য ইকোসিস্টেম সরবরাহ করি।',
+                    'feature-1-title': 'চাকরি-ভিত্তিক কোর্স', 'feature-1-desc': 'শিল্প-প্রাসঙ্গিক পাঠ্যক্রম যা আপনাকে প্রথম দিন থেকেই চাকরির জন্য প্রস্তুত করার জন্য ডিজাইন করা হয়েছে।',
+                    'feature-2-title': 'লাইভ প্রজেক্ট', 'feature-2-desc': 'বাস্তব-বিশ্বের প্রকল্প এবং কেস স্টাডিতে কাজ করে ব্যবহারিক অভিজ্ঞতা অর্জন করুন।',
+                    'feature-3-title': 'গুণগত প্রশিক্ষক', 'feature-3-desc': 'বছরের পর বছর অভিজ্ঞতাসম্পন্ন প্রত্যয়িত বিশেষজ্ঞ এবং শিল্প পেশাদারদের কাছ থেকে শিখুন।',
+                    'mission-title': 'আমাদের মহাজাগতিক মিশন',
+                    'mission-p1': 'আমাদের লক্ষ্য শিক্ষাকে গণতান্ত্রিক করা, বাংলাদেশ এবং এর বাইরের প্রত্যেকের জন্য উচ্চমানের শিক্ষা সহজলভ্য করা। আমাদের লক্ষ্য হল ব্যক্তিদের ডিজিটাল যুগে উন্নতি করতে এবং তাদের পূর্ণ সম্ভাবনায় পৌঁছানোর জন্য দক্ষতা এবং জ্ঞান দিয়ে ক্ষমতায়ন করা।',
+                    'mission-p2': 'প্রমাণিত শিক্ষণ পদ্ধতির সাথে অত্যাধুনিক প্রযুক্তিকে একত্রিত করে, আমরা একটি শেখার অভিজ্ঞতা তৈরি করি যা কেবল কার্যকরই নয়, সত্যিই রূপান্তরকারী।',
+                    'ai-path-title': 'এআই দিয়ে আপনার পথ তৈরি করুন',
+                    'ai-path-subtitle': 'আপনার স্বপ্নের চাকরির কথা বলুন, এবং আমাদের এআই আপনার জন্য একটি ব্যক্তিগতকৃত শেখার পথ তৈরি করবে।',
+                    'ai-path-placeholder': "যেমন 'বাংলাদেশে একজন এআই ইঞ্জিনিয়ার হতে চাই'",
+                    'ai-path-button': '✨ আমার পথ তৈরি করুন',
+                    'ai-path-initial': 'আপনার ব্যক্তিগতকৃত পথ এখানে প্রদর্শিত হবে...',
+                    'courses-title': 'আমাদের লাইভ কোর্সগুলো দেখুন',
+                }
+            };
+            let currentLang = localStorage.getItem('language') || 'en';
+
+            const featuresData = [
+                { id: 'feature-1', icon: `<svg>...</svg>`, titleKey: 'feature-1-title', descKey: 'feature-1-desc' },
+                { id: 'feature-2', icon: `<svg>...</svg>`, titleKey: 'feature-2-title', descKey: 'feature-2-desc' },
+                { id: 'feature-3', icon: `<svg>...</svg>`, titleKey: 'feature-3-title', descKey: 'feature-3-desc' }
+            ];
+
+            const coursesData = [ /* Your courses data here */ ];
+            
+            // --- Theme & Language Toggle ---
+            const themeToggle = document.getElementById('theme-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.body.classList.remove('light-mode');
+                    darkIcon.classList.remove('hidden');
+                    lightIcon.classList.add('hidden');
+                } else {
+                    document.body.classList.add('light-mode');
+                    darkIcon.classList.add('hidden');
+                    lightIcon.classList.remove('hidden');
+                }
+                localStorage.setItem('theme', theme);
+            }
+
+            function applyLanguage(lang) {
+                currentLang = lang;
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    const key = el.dataset.lang;
+                    if (translations[lang][key]) {
+                        el.innerHTML = translations[lang][key];
+                    }
+                });
+                // Special placeholder handling
+                const placeholderEl = document.getElementById('career-goal-input');
+                if(placeholderEl) placeholderEl.placeholder = translations[lang]['ai-path-placeholder'];
+
+                langToggle.textContent = lang.toUpperCase();
+                localStorage.setItem('language', lang);
+            }
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+                applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+
+            langToggle.addEventListener('click', () => {
+                applyLanguage(currentLang === 'en' ? 'bn' : 'en');
+            });
+
+            // Initial load
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+            applyLanguage(currentLang);
+
+
+            function populateGrid(containerId, data, isFeature) {
+                const grid = document.getElementById(containerId);
+                if (!grid) return;
+                grid.innerHTML = ''; // Clear existing
+                data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = isFeature ? 'card-glow p-8 rounded-xl' : 'card-glow rounded-xl overflow-hidden';
+                    
+                    let cardHTML = '';
+                    if (isFeature) {
+                        const title = translations[currentLang][item.titleKey] || translations['en'][item.titleKey];
+                        const description = translations[currentLang][item.descKey] || translations['en'][item.descKey];
+                        cardHTML = `<div class="mb-4 inline-block p-4 bg-purple-500/10 rounded-xl">${item.icon}</div>
+                           <h3 class="text-xl font-bold mb-2">${title}</h3>
+                           <p class="text-inherit">${description}</p>`;
+                    } else {
+                         // Course card logic... (assuming it doesn't need translation for now)
+                    }
+                    card.innerHTML = cardHTML;
+                    grid.appendChild(card);
+                });
+            }
+
+            // --- The rest of your existing JS logic ---
+            // (GSAP animations, Gemini API calls, etc.)
+            // Make sure to re-populate grids after language change if needed
+            // For example, wrap grid population in a function and call it within applyLanguage
+            function initializeContent() {
+                populateGrid('features-grid', featuresData, true);
+                // populateGrid('courses-grid', coursesData, false); // Your existing course population
+            }
+            
+            // Re-initialize content on language change
+            const originalApplyLanguage = applyLanguage;
+            applyLanguage = (lang) => {
+                originalApplyLanguage(lang);
+                initializeContent();
+            };
+
+            // Initial load calls
+            initializeContent();
+            applyLanguage(currentLang);
+        });
+
+    </script>
+</body>
+</html>
