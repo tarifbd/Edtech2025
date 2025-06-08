@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customizable Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color: #00001a;
+            --text-color: #E0E0E0;
+            --card-bg-color: rgba(10, 10, 30, 0.5);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        .light-mode {
+            --bg-color: #f3f4f6;
+            --text-color: #111827;
+            --card-bg-color: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .card {
+            background: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="p-6 flex justify-between items-center">
+        <div>
+            <h1 id="site-name" class="text-3xl font-bold">Your Name</h1>
+            <p id="site-tagline" class="text-sm">Your Tagline Here</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <button id="edit-btn" class="px-4 py-2 rounded bg-purple-600 text-white">Edit</button>
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-white/10">
+                <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 7.072l.707-.707a1 1 0 10-1.414-1.414l-.707.707a1 1 0 101.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="p-6 space-y-10">
+        <section>
+            <h2 class="text-2xl font-bold mb-4">About Me</h2>
+            <p id="site-about">Brief introduction goes here.</p>
+        </section>
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Projects</h2>
+            <ul id="features-list" class="space-y-4"></ul>
+        </section>
+    </main>
+
+    <!-- Edit Panel -->
+    <div id="edit-panel" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden">
+        <div class="card w-96 bg-gray-800 text-white space-y-4">
+            <div>
+                <label class="block mb-1">Name</label>
+                <input id="input-name" class="w-full p-2 rounded text-black" />
+            </div>
+            <div>
+                <label class="block mb-1">Tagline</label>
+                <input id="input-tagline" class="w-full p-2 rounded text-black" />
+            </div>
+            <div>
+                <label class="block mb-1">About</label>
+                <textarea id="input-about" class="w-full p-2 rounded text-black"></textarea>
+            </div>
+            <div>
+                <label class="block mb-1">Projects (one per line, format: Title|Description)</label>
+                <textarea id="features-textarea" class="w-full p-2 rounded text-black h-24"></textarea>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button id="save-btn" class="px-4 py-2 bg-purple-600 rounded text-white">Save</button>
+                <button id="cancel-btn" class="px-4 py-2 bg-gray-600 rounded text-white">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const defaultData = {
+            name: 'Your Name',
+            tagline: 'Your Tagline Here',
+            about: 'Brief introduction goes here.',
+            features: [
+                { title: 'Project One', desc: 'Describe your project.' },
+                { title: 'Project Two', desc: 'Describe your project.' }
+            ]
+        };
+
+        let siteData = JSON.parse(localStorage.getItem('portfolioData')) || defaultData;
+
+        function renderSite() {
+            document.getElementById('site-name').textContent = siteData.name;
+            document.getElementById('site-tagline').textContent = siteData.tagline;
+            document.getElementById('site-about').textContent = siteData.about;
+            const list = document.getElementById('features-list');
+            list.innerHTML = '';
+            siteData.features.forEach(f => {
+                const li = document.createElement('li');
+                li.className = 'card';
+                li.innerHTML = `<h3 class="text-xl font-bold mb-1">${f.title}</h3><p>${f.desc}</p>`;
+                list.appendChild(li);
+            });
+        }
+
+        function openEditor() {
+            document.getElementById('edit-panel').classList.remove('hidden');
+            document.getElementById('input-name').value = siteData.name;
+            document.getElementById('input-tagline').value = siteData.tagline;
+            document.getElementById('input-about').value = siteData.about;
+            document.getElementById('features-textarea').value = siteData.features.map(f => `${f.title}|${f.desc}`).join('\n');
+        }
+
+        function closeEditor() {
+            document.getElementById('edit-panel').classList.add('hidden');
+        }
+
+        function saveData() {
+            siteData.name = document.getElementById('input-name').value;
+            siteData.tagline = document.getElementById('input-tagline').value;
+            siteData.about = document.getElementById('input-about').value;
+            siteData.features = document.getElementById('features-textarea').value.split('\n').filter(Boolean).map(line => {
+                const [title, desc] = line.split('|');
+                return { title: title.trim(), desc: (desc || '').trim() };
+            });
+            localStorage.setItem('portfolioData', JSON.stringify(siteData));
+            renderSite();
+            closeEditor();
+        }
+
+        document.getElementById('edit-btn').addEventListener('click', openEditor);
+        document.getElementById('cancel-btn').addEventListener('click', closeEditor);
+        document.getElementById('save-btn').addEventListener('click', saveData);
+
+        // Theme toggling
+        const themeToggle = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.remove('light-mode');
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+            } else {
+                document.body.classList.add('light-mode');
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        applyTheme(savedTheme);
+        renderSite();
+    </script>
+</body>
+</html>
